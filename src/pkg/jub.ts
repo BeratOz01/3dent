@@ -1,6 +1,5 @@
 import crypto from "node:crypto";
-import { Base8 } from "@zk-kit/baby-jubjub";
-import { mulPointEscalar } from "@zk-kit/baby-jubjub";
+import { Base8, mulPointEscalar } from "@zk-kit/baby-jubjub";
 import { BN128_PRIME } from "./constants";
 
 export function genRandomPrivateKey() {
@@ -23,3 +22,16 @@ export const genKeyPair = () => {
 	const publicKey = mulPointEscalar(Base8, privateKey);
 	return { privateKey, publicKey };
 };
+
+// generates random scalar in the range of the curve order
+export function genRandomScalar(): bigint {
+	return genRandomPrivateKey();
+}
+
+// field reduction
+export function fieldE(n: bigint): bigint {
+	const order = BigInt(BN128_PRIME);
+	const res = n % order;
+
+	return res < 0 ? res + order : res;
+}

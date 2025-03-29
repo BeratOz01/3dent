@@ -1,23 +1,106 @@
-import { useState } from "react";
+import {
+	Base8,
+	type Point,
+	addPoint,
+	mulPointEscalar,
+	packPoint,
+} from "@zk-kit/baby-jubjub";
+import { useEffect, useMemo, useState } from "react";
 import { IDENTITY_POINT } from "../../pkg/constants";
-import { genKeyPair } from "../../pkg/jub";
+import { fieldE, genKeyPair, genRandomScalar } from "../../pkg/jub";
 import type { IJubPoint } from "../../types";
+import { Divider } from "../divider";
+import { Decryption } from "../elgamal/Decryption";
+import { Encryption } from "../elgamal/Encryption";
 import { GenerateKey } from "../elgamal/GenerateKey";
-import { MathEquation } from "./MathEquation";
 
 export const ElGamal = () => {
-	const [keyPair, setKeyPair] = useState<{
-		privateKey: bigint;
-		publicKey: IJubPoint;
-	}>({ privateKey: 0n, publicKey: IDENTITY_POINT });
+	const [message, setMessage] = useState<string>("");
+	const [encryptionRandom, setEncryptionRandom] = useState<bigint>(0n);
+	const [keyPair, setKeyPair] = useState({
+		privateKey: 0n,
+		publicKey: IDENTITY_POINT,
+	});
 
+	const [ciphertext, setCiphertext] = useState<{
+		C1: IJubPoint;
+		C2: IJubPoint;
+	}>({
+		C1: IDENTITY_POINT,
+		C2: IDENTITY_POINT,
+	});
+
+	const [decrypted, setDecrypted] = useState<IJubPoint>(IDENTITY_POINT);
+	const [packedOriginal, setPackedOriginal] = useState<string>("");
+	const [packedDecrypted, setPackedDecrypted] = useState<string>("");
+
+	// biome-ignore lint/correctness/useExhaustiveDependencies:  every time key pair changes, update message, ciphertext, encryption random, and decrypted
+	useEffect(() => {
+		setMessage("");
+		setCiphertext({
+			C1: IDENTITY_POINT,
+			C2: IDENTITY_POINT,
+		});
+		setEncryptionRandom(0n);
+		setDecrypted(IDENTITY_POINT);
+		setPackedOriginal("");
+		setPackedDecrypted("");
+	}, [keyPair]);
+
+	const canDecrypt = useMemo(() => {
+		return !!keyPair.privateKey && !!ciphertext.C1.x && !!ciphertext.C2.x;
+	}, [keyPair.privateKey, ciphertext.C1, ciphertext.C2]);
+
+	// generates key pair
 	const handleGenerateKeyPair = () => {
 		const { privateKey, publicKey } = genKeyPair();
-		setKeyPair({ privateKey, publicKey: { x: publicKey[0], y: publicKey[1] } });
+		setKeyPair({
+			privateKey,
+			publicKey: { x: publicKey[0], y: publicKey[1] },
+		});
 	};
+
+	// handles el gamal encryption
+	const handleEncrypt = () => {
+		if (!message) return;
+		const msgInBigInt = BigInt(message);
+		const msgInPoint = mulPointEscalar(Base8, msgInBigInt);
+		const packed = packPoint(msgInPoint);
+		setPackedOriginal(packed.toString());
+		const random = genRandomScalar();
+		setEncryptionRandom(random);
+
+		const c1 = mulPointEscalar(Base8, random);
+		const pky = mulPointEscalar(
+			[keyPair.publicKey.x, keyPair.publicKey.y],
+			random,
+		);
+		const c2 = addPoint(pky, msgInPoint);
+
+		setCiphertext({
+			C1: { x: c1[0], y: c1[1] },
+			C2: { x: c2[0], y: c2[1] },
+		});
+	};
+
+	// handles el gamal decryption
+	const handleDecrypt = () => {
+		if (!ciphertext || !keyPair.privateKey) return;
+		const c1 = ciphertext.C1;
+		const c2 = ciphertext.C2;
+
+		const c1x = mulPointEscalar([c1.x, c1.y], keyPair.privateKey);
+		const c1xInverse = [fieldE(c1x[0] * -1n), c1x[1]];
+		const decryptedPoint = addPoint([c2.x, c2.y], c1xInverse as Point<bigint>);
+		const packed = packPoint(decryptedPoint);
+		setPackedDecrypted(packed.toString());
+
+		setDecrypted({ x: decryptedPoint[0], y: decryptedPoint[1] });
+	};
+
 	return (
 		<>
-			<div className="text-cyber-gray font-mono text-sm leading-relaxed mt-10 mb-6">
+			<div className="text-cyber-gray font-mono text-sm leading-relaxed mt-10 mb-2">
 				<h2 className="text-cyber-green font-bold text-lg mb-4 text-center">
 					ElGamal Encryption on BabyJubjub
 				</h2>
@@ -29,23 +112,31 @@ export const ElGamal = () => {
 				</p>
 			</div>
 
+			<Divider title="🔐 Key Generation" />
 			<GenerateKey
 				handleGenerateKeyPair={handleGenerateKeyPair}
 				keyPair={keyPair}
 			/>
 
-			<h2 className="text-cyber-gray font-mono text-sm leading-relaxed mt-10 mb-6">
-				- Encryption
-			</h2>
+			<Divider title="📦 Encryption" />
+			<Encryption
+				message={message}
+				setMessage={setMessage}
+				handleEncrypt={handleEncrypt}
+				ciphertext={ciphertext}
+				setCiphertext={setCiphertext}
+				encryptionRandom={encryptionRandom}
+				setDecrypted={setDecrypted}
+			/>
 
-			<MathEquation>
-				<p className="text-sm font-mono">
-					{/* <strong>Key Generation:</strong> */}P = xG <br />Y = xG <br />
-					{/* <strong>Encryption:</strong> */}C<sub>1</sub> = kG <br />C
-					<sub>2</sub> = M + kY <br />
-					{/* <strong>Decryption:</strong> */}M = C<sub>2</sub> - xC<sub>1</sub>
-				</p>
-			</MathEquation>
+			<Divider title="🔑 Decryption" />
+			<Decryption
+				decrypted={decrypted}
+				handleDecrypt={handleDecrypt}
+				canDecrypt={canDecrypt}
+				packedOriginal={packedOriginal}
+				packedDecrypted={packedDecrypted}
+			/>
 		</>
 	);
 };

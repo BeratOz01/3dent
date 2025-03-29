@@ -4,7 +4,7 @@ import { ECC } from "./pages/ECC";
 import { Hashes } from "./pages/Hashes";
 
 export function App() {
-	const [selectedPage, setSelectedPage] = useState<"hashes" | "ecc">("hashes");
+	const [selectedPage, setSelectedPage] = useState<"hashes" | "ecc">("ecc");
 
 	return (
 		<div className="flex min-h-screen bg-gray-100">
@@ -16,20 +16,20 @@ export function App() {
 					<li>
 						{/* biome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
 						<p
-							onClick={() => setSelectedPage("hashes")}
+							onClick={() => setSelectedPage("ecc")}
 							className="block px-4 py-2 rounded text-center text-cyber-green cursor-pointer font-mono"
 						>
-							Hash Functions
+							ECC (BabyJubjub)
 						</p>
 					</li>
 					<div className="border-b border-cyber-green/30 my-2" />
 					<li>
 						{/* biome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
 						<p
-							onClick={() => setSelectedPage("ecc")}
+							onClick={() => setSelectedPage("hashes")}
 							className="block px-4 py-2 rounded text-center text-cyber-green cursor-pointer font-mono"
 						>
-							ECC (BabyJubjub)
+							Hash Functions
 						</p>
 					</li>
 				</ul>

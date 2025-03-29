@@ -1,4 +1,5 @@
 import type { IJubPoint } from "../../types";
+import { toHex } from "../../utils/conversion";
 import { CurvePoint } from "../ecc/CurvePoint";
 
 interface GenerateKeyProps {
@@ -15,25 +16,22 @@ export const GenerateKey = ({
 }: GenerateKeyProps) => {
 	return (
 		<div className="space-y-4 font-mono">
-			<h2 className="text-cyber-gray font-mono text-sm leading-relaxed mt-10 mb-6">
-				- Generate Key Pair
-			</h2>
+			<div className="space-y-2">
+				<p className="indent-6 text-sm">
+					Click the button below to generate a new ElGamal key pair. This will
+					create a random private key, and compute its corresponding public key
+					on the BabyJubjub elliptic curve. These keys will be used to perform
+					encryption and decryption operations in the next steps.
+				</p>
+			</div>
 
 			<div className="space-y-4 font-mono">
-				<button
-					type="button"
-					onClick={handleGenerateKeyPair}
-					className="bg-cyber-dark text-cyber-green px-2 py-1 rounded-md text-sm border border-cyber-green/60"
-				>
-					Generate Key Pair
-				</button>
-
 				{keyPair && (
 					<div className="space-y-2 font-mono text-sm">
 						<div className="text-cyber-gray">
 							Private Key:{" "}
 							<span className="text-cyber-green/60">
-								{keyPair.privateKey.toString()}
+								{toHex(keyPair.privateKey.toString())}
 							</span>
 						</div>
 						<CurvePoint
@@ -45,6 +43,13 @@ export const GenerateKey = ({
 						/>
 					</div>
 				)}
+				<button
+					type="button"
+					onClick={handleGenerateKeyPair}
+					className="bg-cyber-dark w-full text-cyber-green px-2 py-1 rounded-md text-sm border border-cyber-green/60 hover:bg-cyber-green/60 transition-all duration-150"
+				>
+					Generate Key Pair
+				</button>
 			</div>
 		</div>
 	);

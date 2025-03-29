@@ -32,7 +32,6 @@ export function CurvePoint({
 		try {
 			if (x.toString() && y.toString()) {
 				const issOnCurve = inCurve([x, y] as Point<bigint>);
-				console.log({ issOnCurve, x, y });
 				setIsOnCurve(issOnCurve);
 			}
 		} catch (error) {

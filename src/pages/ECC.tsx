@@ -5,7 +5,7 @@ import { CurvePoint } from "../components/ecc/CurvePoint";
 import { ElGamal } from "../components/ecc/ElGamal";
 import { MathEquation } from "../components/ecc/MathEquation";
 import { PointOperations } from "../components/ecc/PointOperations";
-import { IDENTITY_POINT } from "../pkg/constants";
+import { GENERATOR_POINT, IDENTITY_POINT } from "../pkg/constants";
 import type { IJubPoint } from "../types";
 
 export function ECC() {
@@ -21,7 +21,6 @@ export function ECC() {
 		setP2((prev) => ({ ...prev, ...point }));
 
 	useEffect(() => {
-		// console.log(packPoint(p1 as Point<bigint>));
 		if (p1.x.toString() && p1.y.toString()) {
 			try {
 				const _p1 = [p1.x, p1.y] as Point<bigint>;
@@ -82,12 +81,10 @@ export function ECC() {
 							</h3>
 							<MathEquation>
 								<p className="text-sm font-mono scrollable-text">
-									x =
-									995203441582195749578291179787384436505546430278305826713579947235728471134
+									x = {GENERATOR_POINT.x.toString()}
 								</p>
 								<p className="text-sm font-mono scrollable-text">
-									y =
-									5472060717959818805561601436314318772137091100104008585924551046643952123905
+									y = {GENERATOR_POINT.y.toString()}
 								</p>
 							</MathEquation>
 						</div>
@@ -108,7 +105,7 @@ export function ECC() {
 				</div>
 			</div>
 
-			<p className="text-cyber-gray text-sm font-mono text-center mt-2 mb-1">
+			<p className="text-cyber-gray text-sm font-mono text-center my-4">
 				Fill in the points P1 and P2 to use the operations.
 			</p>
 
