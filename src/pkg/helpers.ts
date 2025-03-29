@@ -30,26 +30,15 @@ export const formatAmount = (amount: string): bigint => {
 	return BigInt(`${trimmedAmount}00`);
 };
 
-export const formatDisplayAmount = (amount: bigint): string => {
-	if (!amount) return "0";
-	if (amount === 0n) return "0";
+export const formatDisplayAmount = (amount: bigint, decimals = 2): string => {
+	if (!amount || amount === 0n) return "0";
 
-	// Convert bigint to string and pad with leading zeros if needed
-	let numStr = amount.toString();
-	numStr = numStr.padStart(3, "0"); // Ensure at least 3 digits for proper decimal placement
+	const numStr = amount.toString().padStart(decimals + 1, "0");
 
-	// Split into whole and decimal parts
-	const whole = numStr.slice(0, -2);
-	const decimal = numStr.slice(-2);
+	const whole = numStr.slice(0, -decimals);
+	const decimal = numStr.slice(-decimals);
 
-	// Remove trailing zeros from decimal part
 	const trimmedDecimal = decimal.replace(/0+$/, "");
 
-	// If decimal part is empty after trimming, return just the whole number
-	if (trimmedDecimal === "") {
-		return whole;
-	}
-
-	// Combine with decimal point
-	return `${whole}.${trimmedDecimal}`;
+	return trimmedDecimal ? `${whole}.${trimmedDecimal}` : whole;
 };

@@ -1,62 +1,61 @@
 import { useState } from "react";
-import { formatAmount } from "../../pkg/helpers";
 
-interface BurnProps {
-	handlePrivateBurn: (amount: bigint) => Promise<void>;
+interface DepositProps {
+	handlePrivateDeposit: (amount: string) => Promise<void>;
 	shouldGenerateKey: boolean;
 }
 
-export function Burn({ handlePrivateBurn, shouldGenerateKey }: BurnProps) {
-	const [burnAmount, setBurnAmount] = useState<string>("");
+export function Deposit({
+	handlePrivateDeposit,
+	shouldGenerateKey,
+}: DepositProps) {
+	const [depositAmount, setDepositAmount] = useState<string>("");
 	const [loading, setLoading] = useState<boolean>(false);
 
 	return (
 		<>
 			<div className="flex-1">
-				<h3 className="text-cyber-green font-bold mb-2">Private Burn</h3>
+				<h3 className="text-cyber-green font-bold mb-2">Deposit</h3>
 				<p className="text-sm text-cyber-gray font-mono leading-relaxed mb-4">
-					To burn tokens, the protocol performs a private transfer to a special
-					identity account with public key <code>(0, 1)</code> — the identity
-					point on the BabyJubjub curve. This dummy account has no corresponding
-					private key, making the transferred tokens permanently inaccessible.
-					This mechanism ensures that tokens are cryptographically removed from
-					circulation without breaking the encrypted balance model.
+					When you deposit tokens, you first approve the converter contract to
+					spend your ERC-20. Once approved and and deposited, the contract
+					receives the tokens and encrypts the deposited amount using your
+					public key. This encrypted value is then added to your private balance
+					using homomorphic operations.
 				</p>
 			</div>
 
 			<div>
 				<input
 					type="text"
-					value={burnAmount}
+					value={depositAmount}
 					onChange={(e) => {
 						const value = e.target.value.trim();
 						if (/^\d*\.?\d{0,2}$/.test(value)) {
-							setBurnAmount(value);
+							setDepositAmount(value);
 						}
 					}}
-					placeholder={"..."}
+					placeholder={"Amount in ether (eg. 1.5, 0.01)"}
 					className="flex-1 bg-cyber-dark text-cyber-gray px-2 py-0.5 rounded-lg border border-cyber-green/20 focus:border-cyber-green focus:ring-1 focus:ring-cyber-green outline-none font-mono w-full"
 				/>
-
 				<button
 					type="button"
 					className="bg-cyber-dark w-full text-cyber-green px-2 py-1 rounded-md text-sm border border-cyber-green/60 disabled:opacity-50 disabled:cursor-not-allowed mb-2 hover:bg-cyber-green/60 transition-all duration-200 font-mono mt-2"
 					onClick={async () => {
 						setLoading(true);
-						const formattedAmount = formatAmount(burnAmount);
-						handlePrivateBurn(formattedAmount)
+						handlePrivateDeposit(depositAmount)
 							.then(() => {
 								setLoading(false);
-								setBurnAmount("");
+								setDepositAmount("");
 							})
 							.catch((error) => {
 								console.error(error);
 								setLoading(false);
 							});
 					}}
-					disabled={!burnAmount || loading || shouldGenerateKey}
+					disabled={!depositAmount || loading || shouldGenerateKey}
 				>
-					{loading ? "Burning..." : "Burn"}
+					{loading ? "Depositing..." : "Deposit"}
 				</button>
 			</div>
 		</>

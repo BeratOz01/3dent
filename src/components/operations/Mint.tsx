@@ -3,9 +3,10 @@ import { formatAmount } from "../../pkg/helpers";
 
 interface MintProps {
 	handlePrivateMint: (amount: bigint) => Promise<void>;
+	shouldGenerateKey: boolean;
 }
 
-export function Mint({ handlePrivateMint }: MintProps) {
+export function Mint({ handlePrivateMint, shouldGenerateKey }: MintProps) {
 	const [mintAmount, setMintAmount] = useState<string>("");
 	const [loading, setLoading] = useState<boolean>(false);
 	return (
@@ -43,12 +44,17 @@ export function Mint({ handlePrivateMint }: MintProps) {
 					onClick={async () => {
 						setLoading(true);
 						const formattedAmount = formatAmount(mintAmount);
-						handlePrivateMint(formattedAmount).then(() => {
-							setLoading(false);
-							setMintAmount("");
-						});
+						handlePrivateMint(formattedAmount)
+							.then(() => {
+								setLoading(false);
+								setMintAmount("");
+							})
+							.catch((error) => {
+								console.error(error);
+								setLoading(false);
+							});
 					}}
-					disabled={!mintAmount || loading}
+					disabled={!mintAmount || loading || shouldGenerateKey}
 				>
 					{loading ? "Minting..." : "Mint"}
 				</button>

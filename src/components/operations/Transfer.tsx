@@ -1,11 +1,14 @@
 import { useState } from "react";
-import { formatAmount } from "../../pkg/helpers";
 
 interface TransferProps {
-	handlePrivateTransfer: (to: string, amount: bigint) => Promise<void>;
+	handlePrivateTransfer: (to: string, amount: string) => Promise<void>;
+	shouldGenerateKey: boolean;
 }
 
-export function Transfer({ handlePrivateTransfer }: TransferProps) {
+export function Transfer({
+	handlePrivateTransfer,
+	shouldGenerateKey,
+}: TransferProps) {
 	const [transferAmount, setTransferAmount] = useState<string>("");
 	const [to, setTo] = useState<string>("");
 	const [loading, setLoading] = useState<boolean>(false);
@@ -51,13 +54,17 @@ export function Transfer({ handlePrivateTransfer }: TransferProps) {
 					className="bg-cyber-dark w-full text-cyber-green px-2 py-1 rounded-md text-sm border border-cyber-green/60 disabled:opacity-50 disabled:cursor-not-allowed mb-2 hover:bg-cyber-green/60 transition-all duration-200 font-mono mt-2"
 					onClick={async () => {
 						setLoading(true);
-						const formattedAmount = formatAmount(transferAmount);
-						handlePrivateTransfer(to, formattedAmount).then(() => {
-							setLoading(false);
-							setTransferAmount("");
-						});
+						handlePrivateTransfer(to, transferAmount)
+							.then(() => {
+								setLoading(false);
+								setTransferAmount("");
+							})
+							.catch((error) => {
+								console.error(error);
+								setLoading(false);
+							});
 					}}
-					disabled={!transferAmount || loading || !to}
+					disabled={!transferAmount || loading || !to || shouldGenerateKey}
 				>
 					{loading ? "Transferring..." : "Transfer"}
 				</button>
