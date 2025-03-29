@@ -2,9 +2,12 @@ import { useState } from "react";
 import { Logo } from "./components/layout/Logo";
 import { ECC } from "./pages/ECC";
 import { Hashes } from "./pages/Hashes";
+import { EERC } from "./pages/eERC";
 
 export function App() {
-	const [selectedPage, setSelectedPage] = useState<"hashes" | "ecc">("ecc");
+	const [selectedPage, setSelectedPage] = useState<"hashes" | "ecc" | "EERC">(
+		"EERC",
+	);
 
 	return (
 		<div className="flex min-h-screen bg-gray-100">
@@ -13,6 +16,16 @@ export function App() {
 					<Logo />
 				</div>
 				<ul className="flex-grow space-y-2 p-4">
+					<li>
+						{/* biome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
+						<p
+							onClick={() => setSelectedPage("EERC")}
+							className="block px-4 py-2 rounded text-center text-cyber-green cursor-pointer font-mono"
+						>
+							eERC
+						</p>
+					</li>
+					<div className="border-b border-cyber-green/30 my-2" />
 					<li>
 						{/* biome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
 						<p
@@ -40,7 +53,13 @@ export function App() {
 
 			{/* Page Content */}
 			<main className="flex-grow p-6 bg-cyber-black">
-				{selectedPage === "hashes" ? <Hashes /> : <ECC />}
+				{selectedPage === "hashes" ? (
+					<Hashes />
+				) : selectedPage === "ecc" ? (
+					<ECC />
+				) : (
+					<EERC />
+				)}
 			</main>
 		</div>
 	);

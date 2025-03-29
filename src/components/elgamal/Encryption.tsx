@@ -2,7 +2,7 @@ import { Base8, mulPointEscalar } from "@zk-kit/baby-jubjub";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { useEffect } from "react";
-import { GENERATOR_POINT, IDENTITY_POINT } from "../../pkg/constants";
+import { IDENTITY_POINT } from "../../pkg/constants";
 import type { IJubPoint } from "../../types";
 import { CurvePoint } from "../ecc/CurvePoint";
 

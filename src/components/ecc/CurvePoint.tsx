@@ -9,6 +9,7 @@ interface CurvePointProps {
 	label?: string;
 	onChange: (point: Partial<IJubPoint>) => void;
 	shouldCollapse?: boolean;
+	isCentered?: boolean;
 }
 
 export function CurvePoint({
@@ -17,6 +18,7 @@ export function CurvePoint({
 	label,
 	onChange,
 	shouldCollapse = true,
+	isCentered = false,
 }: CurvePointProps) {
 	const [isHovering, setIsHovering] = useState(false);
 	const [isOnCurve, setIsOnCurve] = useState(false);
@@ -55,11 +57,19 @@ export function CurvePoint({
 	}, [isOnCurve]);
 
 	return (
-		<div className="group relative flex-1">
+		<div
+			className={`group relative ${isCentered ? "flex justify-center" : "flex-1"}`}
+		>
 			<div
-				className={`flex items-center space-x-4 bg-cyber-dark/50 px-4 py-3 rounded-lg border ${styles.boxStyle} transition-all`}
-				onMouseEnter={() => setIsHovering(true)}
-				onMouseLeave={() => setIsHovering(false)}
+				className={`flex items-center space-x-4 bg-cyber-dark/50 px-4 py-3 rounded-lg border ${
+					styles.boxStyle
+				} transition-all ${isCentered ? "w-fit" : "w-full"}`}
+				onMouseEnter={() => {
+					if (!isCentered) setIsHovering(true);
+				}}
+				onMouseLeave={() => {
+					if (!isCentered) setIsHovering(false);
+				}}
 			>
 				<div className="flex-shrink-0 w-12 h-12 flex items-center justify-center flex-col">
 					<FaMapPin className={`w-6 h-6 self-center ${styles.pinColor}`} />

@@ -9,9 +9,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@avalabs/eerc-sdk-next": "^0.0.2",
     "@darkforest_eth/hashing": "^6.7.29",
     "@react-three/drei": "^9.120.4",
     "@react-three/fiber": "^8.17.10",
+    "@tanstack/react-query": "^5.70.0",
     "@zk-kit/baby-jubjub": "^1.0.3",
     "circomlibjs": "^0.1.7",
     "framer-motion": "^10.16.4",
@@ -21,8 +23,11 @@
     "react-dom": "^18.2.0",
     "react-icons": "^4.12.0",
     "react-syntax-highlighter": "^15.5.0",
+    "react-toastify": "^11.0.5",
     "recharts": "^2.15.0",
-    "three": "^0.171.0"
+    "three": "^0.171.0",
+    "viem": "^2.24.2",
+    "wagmi": "^2.14.15"
   },
   "devDependencies": {
     "@types/circomlibjs": "^0.1.6",

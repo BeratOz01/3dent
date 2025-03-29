@@ -9,7 +9,7 @@ import { useEffect, useMemo, useState } from "react";
 import { IDENTITY_POINT } from "../../pkg/constants";
 import { fieldE, genKeyPair, genRandomScalar } from "../../pkg/jub";
 import type { IJubPoint } from "../../types";
-import { Divider } from "../divider";
+import { Divider } from "../Divider";
 import { Decryption } from "../elgamal/Decryption";
 import { Encryption } from "../elgamal/Encryption";
 import { GenerateKey } from "../elgamal/GenerateKey";

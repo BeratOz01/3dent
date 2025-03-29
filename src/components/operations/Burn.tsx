@@ -1,0 +1,58 @@
+import { useState } from "react";
+import { formatAmount } from "../../pkg/helpers";
+
+interface BurnProps {
+	handlePrivateBurn: (amount: bigint) => Promise<void>;
+}
+
+export function Burn({ handlePrivateBurn }: BurnProps) {
+	const [burnAmount, setBurnAmount] = useState<string>("");
+	const [loading, setLoading] = useState<boolean>(false);
+
+	return (
+		<>
+			<div className="flex-1">
+				<h3 className="text-cyber-green font-bold mb-2">Private Burn</h3>
+				<p className="text-sm text-cyber-gray font-mono leading-relaxed mb-4">
+					To burn tokens, the protocol performs a private transfer to a special
+					identity account with public key <code>(0, 1)</code> — the identity
+					point on the BabyJubjub curve. This dummy account has no corresponding
+					private key, making the transferred tokens permanently inaccessible.
+					This mechanism ensures that tokens are cryptographically removed from
+					circulation without breaking the encrypted balance model.
+				</p>
+			</div>
+
+			<div>
+				<input
+					type="text"
+					value={burnAmount}
+					onChange={(e) => {
+						const value = e.target.value.trim();
+						if (/^\d*\.?\d{0,2}$/.test(value)) {
+							setBurnAmount(value);
+						}
+					}}
+					placeholder={"..."}
+					className="flex-1 bg-cyber-dark text-cyber-gray px-2 py-0.5 rounded-lg border border-cyber-green/20 focus:border-cyber-green focus:ring-1 focus:ring-cyber-green outline-none font-mono w-full"
+				/>
+
+				<button
+					type="button"
+					className="bg-cyber-dark w-full text-cyber-green px-2 py-1 rounded-md text-sm border border-cyber-green/60 disabled:opacity-50 disabled:cursor-not-allowed mb-2 hover:bg-cyber-green/60 transition-all duration-200 font-mono mt-2"
+					onClick={async () => {
+						setLoading(true);
+						const formattedAmount = formatAmount(burnAmount);
+						handlePrivateBurn(formattedAmount).then(() => {
+							setLoading(false);
+							setBurnAmount("");
+						});
+					}}
+					disabled={!burnAmount || loading}
+				>
+					{loading ? "Burning..." : "Burn"}
+				</button>
+			</div>
+		</>
+	);
+}
