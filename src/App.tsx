@@ -1,13 +1,14 @@
 import { useState } from "react";
 import { Logo } from "./components/layout/Logo";
 import { ECC } from "./pages/ECC";
+import { EERC } from "./pages/EERC";
 import { Hashes } from "./pages/Hashes";
-import { EERC } from "./pages/eERC";
+import { PoseidonEncrypt } from "./pages/PoseidonEncrypt";
 
 export function App() {
-	const [selectedPage, setSelectedPage] = useState<"hashes" | "ecc" | "EERC">(
-		"EERC",
-	);
+	const [selectedPage, setSelectedPage] = useState<
+		"hashes" | "ecc" | "EERC" | "poseidon"
+	>("poseidon");
 
 	return (
 		<div className="flex min-h-screen bg-gray-100">
@@ -45,6 +46,16 @@ export function App() {
 							Hash Functions
 						</p>
 					</li>
+					<div className="border-b border-cyber-green/30 my-2" />
+					<li>
+						{/* biome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
+						<p
+							onClick={() => setSelectedPage("poseidon")}
+							className="block px-4 py-2 rounded text-center text-cyber-green cursor-pointer font-mono"
+						>
+							Poseidon Encryption
+						</p>
+					</li>
 				</ul>
 				<footer className="bg-cyber-dark mt-12 py-6 text-center text-cyber-gray">
 					<p className="font-mono">Built for Developers</p>
@@ -57,8 +68,10 @@ export function App() {
 					<Hashes />
 				) : selectedPage === "ecc" ? (
 					<ECC />
-				) : (
+				) : selectedPage === "EERC" ? (
 					<EERC />
+				) : (
+					<PoseidonEncrypt />
 				)}
 			</main>
 		</div>

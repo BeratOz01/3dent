@@ -36,7 +36,7 @@ export function Withdraw({
 						}
 					}}
 					placeholder={"Amount in ether (eg. 1.5, 0.01)"}
-					className="flex-1 bg-cyber-dark text-cyber-gray px-2 py-0.5 rounded-lg border border-cyber-green/20 focus:border-cyber-green focus:ring-1 focus:ring-cyber-green outline-none font-mono w-full"
+					className="flex-1 bg-cyber-dark text-cyber-gray px-4 py-0.5 rounded-lg border border-cyber-green/20 focus:border-cyber-green focus:ring-1 focus:ring-cyber-green outline-none font-mono w-full"
 				/>
 				<button
 					type="button"

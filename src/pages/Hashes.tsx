@@ -71,6 +71,28 @@ export function Hashes() {
 					it possible to verify the correctness of computations while keeping
 					inputs private.
 				</p>
+				<p className="text-justify indent-6">
+					<strong className="text-cyber-green">Poseidon</strong> is a
+					zk-friendly hash function specifically designed to be efficient inside
+					zk-SNARK and zk-STARK circuits. Unlike traditional hash functions like
+					SHA or Keccak, Poseidon is optimized to reduce the number of
+					constraints in arithmetic circuits over finite fields — making it
+					extremely efficient for use in zk applications. Its algebraic
+					structure is well-suited for zk proving systems, making operations
+					like Merkle tree hashing, commitments, and on-chain validation much
+					cheaper and scalable.
+				</p>
+				<p className="text-justify indent-6">
+					Another zk-optimized hash function is{" "}
+					<strong className="text-cyber-green">MiMC Sponge</strong>, which
+					operates on a similar principle but with a different internal
+					construction. While MiMC provides excellent performance in certain
+					contexts, Poseidon generally outperforms it in constraint minimization
+					and proof generation times, especially in zkDSLs and proof systems
+					like Halo2, Circom, and Plonk. Both Poseidon and MiMC are widely used
+					for hashing sensitive data, generating commitments, and building
+					verifiable circuits that preserve privacy at scale.
+				</p>
 			</div>
 			<HashInput
 				inputs={inputs}

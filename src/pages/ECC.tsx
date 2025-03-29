@@ -1,6 +1,7 @@
 import { Base8, type Point, packPoint } from "@zk-kit/baby-jubjub";
 import { useEffect, useState } from "react";
 import { FaMapPin } from "react-icons/fa";
+import { RightTooltip } from "../components/Tooltip";
 import { CurvePoint } from "../components/ecc/CurvePoint";
 import { ElGamal } from "../components/ecc/ElGamal";
 import { MathEquation } from "../components/ecc/MathEquation";
@@ -79,14 +80,20 @@ export function ECC() {
 							<h3 className="text-cyber-gray mb-2 text-sm font-mono">
 								Generator Point
 							</h3>
-							<MathEquation>
-								<p className="text-sm font-mono scrollable-text">
-									x = {GENERATOR_POINT.x.toString()}
-								</p>
-								<p className="text-sm font-mono scrollable-text">
-									y = {GENERATOR_POINT.y.toString()}
-								</p>
-							</MathEquation>
+
+							<RightTooltip
+								content="Base point used for public key generation and cryptographic operations."
+								id="generator-point-tooltip"
+							>
+								<MathEquation>
+									<p className="text-sm font-mono scrollable-text">
+										x = {GENERATOR_POINT.x.toString()}
+									</p>
+									<p className="text-sm font-mono scrollable-text">
+										y = {GENERATOR_POINT.y.toString()}
+									</p>
+								</MathEquation>
+							</RightTooltip>
 						</div>
 						<div>
 							<h3 className="text-cyber-gray mb-2 text-sm font-mono">

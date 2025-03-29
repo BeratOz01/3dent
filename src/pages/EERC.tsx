@@ -3,6 +3,7 @@ import {
 	type CompatibleWalletClient,
 	useEERC,
 } from "@avalabs/eerc-sdk-next";
+import { packPoint } from "@zk-kit/baby-jubjub";
 import { useEffect, useState } from "react";
 import { Bounce, toast } from "react-toastify";
 import { parseUnits } from "viem";
@@ -18,6 +19,7 @@ import {
 	useWriteContract,
 } from "wagmi";
 import { Divider } from "../components";
+import { RightTooltip } from "../components/Tooltip";
 import { CurvePoint } from "../components/ecc/CurvePoint";
 import { Operations } from "../components/operations/Operations";
 import { MAX_UINT256, DEMO_TOKEN_ABI as erc20Abi } from "../pkg/constants";
@@ -29,7 +31,7 @@ const eERC_CONVERTER_ADDRESS = "0xFD471836031dc5108809D173A067e8486B9047A3";
 
 export function EERC() {
 	const [txHash, setTxHash] = useState<`0x${string}`>("" as `0x${string}`);
-	const [mode, setMode] = useState<"standalone" | "converter">("converter");
+	const [mode, setMode] = useState<"standalone" | "converter">("standalone");
 
 	const {
 		data: transactionReceipt,
@@ -255,7 +257,8 @@ export function EERC() {
 	return (
 		<main className="max-w-6xl mx-auto px-4 py-8">
 			<div className="text-cyber-gray font-mono text-sm leading-relaxed mt-4">
-				<h2 className="text-cyber-green font-bold text-lg mb-2 text-center">
+				<h2 className="text-cyber-green font-bold text-lg mb-2 text-center flex items-center justify-center gap-2">
+					<img src="/logo.svg" alt="avax" className="w-7 h-7 inline-block" />
 					eERC
 				</h2>
 			</div>
@@ -275,9 +278,9 @@ export function EERC() {
 					while remaining fully private.
 				</p>
 				<p>
-					There are two modes of operation:
+					There are two modes of eERC:{" "}
 					<span className="text-cyber-green font-semibold">
-						Standalone Mode
+						Standalone Mode{" "}
 					</span>
 					lets you mint and manage encrypted tokens directly, while{" "}
 					<span className="text-cyber-green font-semibold">Converter Mode</span>{" "}
@@ -308,10 +311,14 @@ export function EERC() {
 					interaction with the contract (mint, transfer, burn, withdraw) is
 					processed through cryptographic proofs and homomorphic operations.
 					This ensures your private balance is updated correctly — without ever
-					exposing sensitive data to the blockchain. At the same time, the
-					system remains fully{" "}
-					<span className="text-cyber-green font-semibold">auditable</span>,
-					meaning an auditor can decrypt the transactions and balances.
+					exposing sensitive data to the blockchain. At the same time Encrypted
+					ERC incorporates a powerful{" "}
+					<span className="text-cyber-green font-semibold">auditability</span>{" "}
+					feature that addresses regulatory compliance concerns. This feature
+					allows designated regulatory authorities to access and review
+					transaction details through auditor keys, ensuring that while
+					transactions remain private to the general public, authorized
+					regulators can perform necessary oversight functions when required.
 				</p>
 
 				<p className="text-xs text-cyber-green/70 mt-0">
@@ -330,11 +337,9 @@ export function EERC() {
 			<p className="text-sm text-cyber-gray font-mono leading-relaxed mb-4 mt-4 indent-6">
 				The contracts below are deployed on the{" "}
 				<strong className="text-cyber-green">Avalanche Fuji Testnet</strong>.
-				There are two modes of the EERC protocol:
-				<span className="text-cyber-green"> Standalone </span> and
-				<span className="text-cyber-green"> Converter</span>. You can connect
-				your wallet to the Fuji network and interact with these contracts
-				directly — mint, transfer, burn, or convert depending on the mode.
+				You can connect your wallet to the Fuji network and interact with these
+				contracts directly — mint, transfer, burn, or convert depending on the
+				mode.
 			</p>
 
 			{/* Contracts */}
@@ -382,21 +387,6 @@ export function EERC() {
 				</div>
 			</div>
 
-			{/* Faucet */}
-			<div className="border border-cyber-green/30 rounded-md p-2 font-mono text-sm bg-black/10 mt-2 p-3">
-				<p className="text-xs font-mono text-cyber-gray">
-					💧 Need test tokens? You can get AVAX on the Fuji testnet from the{" "}
-					<a
-						href="https://core.app/en/tools/testnet-faucet/?subnet=c&token=c"
-						target="_blank"
-						rel="noopener noreferrer"
-						className="text-cyber-green underline hover:text-cyber-green/80"
-					>
-						Avalanche Faucet →
-					</a>
-				</p>
-			</div>
-
 			<Divider title="🔗 Connect Wallet" />
 			<button
 				type="button"
@@ -436,12 +426,28 @@ export function EERC() {
 				</button>
 			)}
 
+			{/* Faucet */}
+			<div className="border border-cyber-green/30 rounded-md p-2 font-mono text-sm bg-black/10 p-3">
+				<p className="text-xs font-mono text-cyber-gray">
+					💧 Need test tokens? You can get AVAX on the Fuji testnet from the{" "}
+					<a
+						href="https://core.app/en/tools/testnet-faucet/?subnet=c&token=c"
+						target="_blank"
+						rel="noopener noreferrer"
+						className="text-cyber-green underline hover:text-cyber-green/80"
+					>
+						Avalanche Faucet →
+					</a>
+				</p>
+			</div>
+
 			<Divider title="🔑 Generate Decryption Key" />
 			<p className="text-sm text-cyber-gray font-mono leading-relaxed mb-4 indent-6">
 				To enable private transactions, each user must generate a unique
 				decryption key tied to their wallet address. This key is used to encrypt
 				and decrypt balances locally in the browser — it is never uploaded or
-				stored on-chain. This key will be derived from your signature.
+				stored on-chain. This key will be derived from your signature by signing
+				a pre-defined message.
 			</p>
 			<button
 				type="button"
@@ -517,7 +523,7 @@ export function EERC() {
 			</div>
 
 			<div className="border border-cyber-green/30 rounded-md p-4 font-mono text-sm bg-black/10">
-				<div className="grid grid-cols-[160px_1fr] gap-y-2 gap-x-2 items-center">
+				<div className="grid grid-cols-[220px_1fr] gap-y-2 gap-x-2 items-center">
 					<div className="text-cyber-green">Contract Address</div>
 					<div className="text-cyber-green/80 break-all">
 						{mode === "standalone"
@@ -527,11 +533,6 @@ export function EERC() {
 
 					<div className="text-cyber-green">Owner</div>
 					<div className="text-cyber-green/80 break-all">{owner ?? "N/A"}</div>
-
-					<div className="text-cyber-green">Is Auditor Key Set</div>
-					<div className="text-cyber-green/80 break-all">
-						{isAuditorKeySet ? "Yes" : "No"}
-					</div>
 
 					<div className="text-cyber-green">Mode</div>
 					<div className="text-cyber-green/80 break-all">
@@ -556,6 +557,27 @@ export function EERC() {
 							</div>
 						</>
 					)}
+
+					<div className="text-cyber-green">Is Auditor Key Set</div>
+					<div className="text-cyber-green/80 break-all">
+						{isAuditorKeySet ? "Yes" : "No"}
+					</div>
+
+					<div className="text-cyber-green">Auditor Public Key (hex)</div>
+					<div className="text-cyber-green/80 break-all">
+						{isAuditorKeySet
+							? `0x${packPoint(auditorPublicKey as [bigint, bigint]).toString(
+									16,
+								)}`
+							: "N/A"}
+					</div>
+
+					<div className="text-cyber-green">User Public Key (hex)</div>
+					<div className="text-cyber-green/80 break-all">
+						{!!publicKey.length && publicKey[0] !== 0n && publicKey[1] !== 0n
+							? `0x${packPoint(publicKey as [bigint, bigint]).toString(16)}`
+							: "N/A"}
+					</div>
 				</div>
 			</div>
 
@@ -569,93 +591,72 @@ export function EERC() {
 						<div className="text-cyber-green/80 break-all">2</div>
 
 						<div className="text-cyber-green">Balance</div>
-						<div className="text-cyber-green/80 break-all">
+						<div className="text-cyber-green/80 break-all flex flex-row">
 							{formatDisplayAmount(erc20Balance ?? 0n, erc20Decimals)}{" "}
 							{erc20Symbol}
-							<button
-								className={`relative group inline-block text-cyber-gray/50 ml-4 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed bg-transparent border-none inline-flex items-center transition-colors ${timeUntilNextRequest !== 0n ? "opacity-50 cursor-not-allowed hover:text-cyber-red" : "hover:text-cyber-gray"}`}
-								title={`Request ERC-20 in ${timeUntilNextRequest} seconds`}
-								onClick={async () => {
-									const transactionHash = await writeContractAsync({
-										abi: erc20Abi,
-										functionName: "requestTokens",
-										args: [],
-										address: ERC20_ADDRESS,
-										account: address as `0x${string}`,
-									});
-									await refetchErc20Balance();
-									await refetchTimeUntilNextRequest();
-									setTxHash(transactionHash as `0x${string}`);
-								}}
-								disabled={timeUntilNextRequest !== 0n}
-								type="button"
+							<RightTooltip
+								content="You can only request test tokens once every hour."
+								id="request-erc20-tooltip"
 							>
-								Request ERC-20
-								<div className="absolute left-full top-1/2 -translate-y-1/2 ml-3 w-max px-3 py-1 rounded bg-black text-xs text-cyber-gray border border-cyber-green opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10 whitespace-nowrap">
-									You can only request test tokens once every hour.
-								</div>
-							</button>
+								<button
+									className={`relative group inline-block text-cyber-gray/50 ml-4 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed bg-transparent border-none inline-flex items-center transition-colors ${timeUntilNextRequest !== 0n ? "opacity-50 cursor-not-allowed hover:text-cyber-red" : "hover:text-cyber-gray"}`}
+									title={`Request ERC-20 in ${timeUntilNextRequest} seconds`}
+									onClick={async () => {
+										const transactionHash = await writeContractAsync({
+											abi: erc20Abi,
+											functionName: "requestTokens",
+											args: [],
+											address: ERC20_ADDRESS,
+											account: address as `0x${string}`,
+										});
+										await refetchErc20Balance();
+										await refetchTimeUntilNextRequest();
+										setTxHash(transactionHash as `0x${string}`);
+									}}
+									disabled={timeUntilNextRequest !== 0n}
+									type="button"
+								>
+									Request ERC-20
+								</button>
+							</RightTooltip>
 						</div>
 
 						<div className="text-cyber-green">Allowance</div>
-						<div className="text-cyber-green/80 break-all">
+						<div className="text-cyber-green/80 break-all flex flex-row">
 							{approveAmount === MAX_UINT256
 								? "MAX"
 								: `${formatDisplayAmount(approveAmount ?? 0n)} ${erc20Symbol}`}
-							<button
-								className={
-									"relative group inline-block text-cyber-gray/50 ml-4 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed bg-transparent border-none inline-flex items-center transition-colors hover:text-cyber-gray"
-								}
-								onClick={async () => {
-									const transactionHash = await writeContractAsync({
-										abi: erc20Abi,
-										functionName: "approve",
-										args: [eERC_CONVERTER_ADDRESS, MAX_UINT256],
-										address: ERC20_ADDRESS,
-										account: address as `0x${string}`,
-									});
-									await refetchApproveAmount();
-									setTxHash(transactionHash as `0x${string}`);
-								}}
-								type="button"
+
+							<RightTooltip
+								content="The maximum amount of ERC-20 tokens that can be approved."
+								id="approve-tooltip"
 							>
-								Approve All
-							</button>
+								<button
+									className={
+										"relative group inline-block text-cyber-gray/50 ml-4 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed bg-transparent border-none inline-flex items-center transition-colors hover:text-cyber-gray"
+									}
+									onClick={async () => {
+										const transactionHash = await writeContractAsync({
+											abi: erc20Abi,
+											functionName: "approve",
+											args: [eERC_CONVERTER_ADDRESS, MAX_UINT256],
+											address: ERC20_ADDRESS,
+											account: address as `0x${string}`,
+										});
+										await refetchApproveAmount();
+										setTxHash(transactionHash as `0x${string}`);
+									}}
+									type="button"
+								>
+									Approve All
+								</button>
+							</RightTooltip>
 						</div>
 					</div>
 				</div>
 			)}
 
-			{/* Auditor Public Key */}
-			{!!auditorPublicKey.length &&
-				!!auditorPublicKey[0] &&
-				!!auditorPublicKey[1] && (
-					<div className="mt-2">
-						<CurvePoint
-							x={auditorPublicKey[0]}
-							y={auditorPublicKey[1]}
-							onChange={() => {}} // Empty function
-							shouldCollapse={false}
-							label="Auditor Public Key"
-						/>
-					</div>
-				)}
-
-			<Divider title="💰 Balance" my={2} />
-			{/* User Public Key */}
-			{!!publicKey.length && !!publicKey[0] && !!publicKey[1] && (
-				<CurvePoint
-					x={publicKey[0]}
-					y={publicKey[1]}
-					onChange={() => {}} // Empty function
-					shouldCollapse={false}
-					label="User Public Key"
-				/>
-			)}
-
-			<p className="text-sm text-cyber-gray font-mono leading-relaxed mb-2 text-center mt-2">
-				Encrypted Balance
-			</p>
+			<Divider title="💰 Encrypted Balance" my={2} />
 			{encryptedBalance && (
 				<div className="flex flex-col gap-2">
 					<CurvePoint

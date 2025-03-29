@@ -34,8 +34,8 @@ export function Transfer({
 					type="text"
 					value={to}
 					onChange={(e) => setTo(e.target.value.trim())}
-					placeholder={"Recipient"}
-					className="flex-1 bg-cyber-dark text-cyber-gray px-2 py-0.5 rounded-lg border border-cyber-green/20 focus:border-cyber-green focus:ring-1 focus:ring-cyber-green outline-none font-mono w-full mb-2"
+					placeholder={"Recipient address"}
+					className="flex-1 bg-cyber-dark text-cyber-gray px-4 py-0.5 rounded-lg border border-cyber-green/20 focus:border-cyber-green focus:ring-1 focus:ring-cyber-green outline-none font-mono w-full mb-2"
 				/>
 				<input
 					type="text"
@@ -47,7 +47,7 @@ export function Transfer({
 						}
 					}}
 					placeholder={"Amount"}
-					className="flex-1 bg-cyber-dark text-cyber-gray px-2 py-0.5 rounded-lg border border-cyber-green/20 focus:border-cyber-green focus:ring-1 focus:ring-cyber-green outline-none font-mono w-full"
+					className="flex-1 bg-cyber-dark text-cyber-gray px-4 py-0.5 rounded-lg border border-cyber-green/20 focus:border-cyber-green focus:ring-1 focus:ring-cyber-green outline-none font-mono w-full"
 				/>
 				<button
 					type="button"
@@ -58,6 +58,7 @@ export function Transfer({
 							.then(() => {
 								setLoading(false);
 								setTransferAmount("");
+								setTo("");
 							})
 							.catch((error) => {
 								console.error(error);

@@ -1,4 +1,4 @@
-import { Base8, mulPointEscalar } from "@zk-kit/baby-jubjub";
+import { Base8, mulPointEscalar, packPoint } from "@zk-kit/baby-jubjub";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { useEffect } from "react";
@@ -69,9 +69,20 @@ export const Encryption = ({
 			</div>
 
 			{!!encryptionRandom && (
-				<div className="border border-cyber-green/40 p-4 rounded bg-black/20 my-4">
+				<div className="border border-cyber-green/40 py-2 px-4 rounded bg-black/20 my-4 text-sm">
 					<p>
 						Encryption random: <code>{encryptionRandom.toString()}</code>
+					</p>
+				</div>
+			)}
+
+			{!!scalarMulResult.x && !!scalarMulResult.y && (
+				<div className="border border-cyber-green/40 py-2 px-4 rounded bg-black/20 my-4 text-sm">
+					<p>
+						Packed message:{" "}
+						<code>
+							0x{packPoint([scalarMulResult.x, scalarMulResult.y]).toString(16)}
+						</code>
 					</p>
 				</div>
 			)}

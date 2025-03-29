@@ -17,11 +17,11 @@ export function Deposit({
 			<div className="flex-1">
 				<h3 className="text-cyber-green font-bold mb-2">Deposit</h3>
 				<p className="text-sm text-cyber-gray font-mono leading-relaxed mb-4">
-					When you deposit tokens, you first approve the converter contract to
-					spend your ERC-20. Once approved and and deposited, the contract
-					receives the tokens and encrypts the deposited amount using your
-					public key. This encrypted value is then added to your private balance
-					using homomorphic operations.
+					When you deposit tokens, you first give the allowance to the converter
+					contract to spend your ERC-20 tokens. Once approved and deposited, the
+					contract receives the tokens and encrypts the deposited amount using
+					your public key. This encrypted value is then added to your private
+					balance using homomorphic operations.
 				</p>
 			</div>
 
@@ -36,7 +36,7 @@ export function Deposit({
 						}
 					}}
 					placeholder={"Amount in ether (eg. 1.5, 0.01)"}
-					className="flex-1 bg-cyber-dark text-cyber-gray px-2 py-0.5 rounded-lg border border-cyber-green/20 focus:border-cyber-green focus:ring-1 focus:ring-cyber-green outline-none font-mono w-full"
+					className="flex-1 bg-cyber-dark text-cyber-gray px-4 py-0.5 rounded-lg border border-cyber-green/20 focus:border-cyber-green focus:ring-1 focus:ring-cyber-green outline-none font-mono w-full"
 				/>
 				<button
 					type="button"
