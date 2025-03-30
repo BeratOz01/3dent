@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Bounce, toast } from "react-toastify";
 
 interface WithdrawProps {
 	handlePrivateWithdraw: (amount: string) => Promise<void>;
@@ -49,7 +50,28 @@ export function Withdraw({
 								setWithdrawAmount("");
 							})
 							.catch((error) => {
-								console.error(error);
+								const isUserRejected = error?.message.includes("User rejected");
+
+								toast.error(
+									<div>
+										<p>
+											{isUserRejected
+												? "Transaction rejected"
+												: "An error occurred while withdrawing tokens. Please try again."}
+										</p>
+									</div>,
+									{
+										position: "top-right",
+										autoClose: 5000,
+										hideProgressBar: true,
+										closeOnClick: true,
+										pauseOnHover: false,
+										draggable: true,
+										progress: undefined,
+										transition: Bounce,
+									},
+								);
+
 								setLoading(false);
 							});
 					}}

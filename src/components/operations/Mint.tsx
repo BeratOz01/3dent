@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { toast } from "react-toastify";
+import { Bounce } from "react-toastify";
 import { formatAmount } from "../../pkg/helpers";
 
 interface MintProps {
@@ -50,7 +52,22 @@ export function Mint({ handlePrivateMint, shouldGenerateKey }: MintProps) {
 								setMintAmount("");
 							})
 							.catch((error) => {
-								console.error(error);
+								console.error(error?.message);
+								toast.error(
+									<div>
+										<p>{error.reason}</p>
+									</div>,
+									{
+										position: "top-right",
+										autoClose: 5000,
+										hideProgressBar: true,
+										closeOnClick: true,
+										pauseOnHover: false,
+										draggable: true,
+										progress: undefined,
+										transition: Bounce,
+									},
+								);
 								setLoading(false);
 							});
 					}}

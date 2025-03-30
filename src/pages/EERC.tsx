@@ -25,9 +25,9 @@ import { Operations } from "../components/operations/Operations";
 import { MAX_UINT256, DEMO_TOKEN_ABI as erc20Abi } from "../pkg/constants";
 import { formatDisplayAmount } from "../pkg/helpers";
 
-const eERC_STANDALONE_ADDRESS = "0x0165878A594ca255338adfa4d48449f69242Eb8F";
-const ERC20_ADDRESS = "0x99bbA657f2BbC93c02D617f8bA121cB8Fc104Acf";
-const eERC_CONVERTER_ADDRESS = "0xFD471836031dc5108809D173A067e8486B9047A3";
+const eERC_STANDALONE_ADDRESS = "0x0B306BF915C4d645ff596e518fAf3F9669b97016";
+const ERC20_ADDRESS = "0xc3e53F4d16Ae77Db1c982e75a937B9f60FE63690";
+const eERC_CONVERTER_ADDRESS = "0x0165878A594ca255338adfa4d48449f69242Eb8F";
 
 export function EERC() {
 	const [txHash, setTxHash] = useState<`0x${string}`>("" as `0x${string}`);
@@ -418,8 +418,15 @@ export function EERC() {
 							console.log("Not connected");
 							return;
 						}
-
 						disconnectAsync();
+						// setContractAuditorPublicKey(address as `0x${string}`)
+						// 	.then(() => {
+						// 		toast.success("Auditor key set");
+						// 	})
+						// 	.catch((error) => {
+						// 		toast.error("Error setting auditor key");
+						// 		console.error(error);
+						// 	});
 					}}
 				>
 					Disconnect
@@ -588,7 +595,7 @@ export function EERC() {
 					</div>
 					<div className="grid grid-cols-[160px_1fr] gap-y-2 gap-x-2 items-center">
 						<div className="text-cyber-green">Decimals</div>
-						<div className="text-cyber-green/80 break-all">2</div>
+						<div className="text-cyber-green/80 break-all">{erc20Decimals}</div>
 
 						<div className="text-cyber-green">Balance</div>
 						<div className="text-cyber-green/80 break-all flex flex-row">
