@@ -18,9 +18,9 @@ export const GenerateKey = ({
 		<div className="space-y-4 font-mono">
 			<div className="space-y-2">
 				<p className="indent-6 text-sm">
-					Click the button below to generate a new ElGamal key pair. This will
-					create a random private key, and compute its corresponding public key
-					on the BabyJubjub elliptic curve. These keys will be used to perform
+					Click the button below to generate a new key pair. This will create a
+					random private key, and compute its corresponding public key on the
+					BabyJubjub elliptic curve. These keys will be used to perform
 					encryption and decryption operations in the next steps.
 				</p>
 			</div>
