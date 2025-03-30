@@ -8,6 +8,7 @@ import type {
 	HashInput as HashInputType,
 	MimcParams,
 } from "../types";
+import { toHex } from "../utils/conversion";
 
 export function Hashes() {
 	const [inputs, setInputs] = useState<HashInputType[]>([
@@ -46,8 +47,13 @@ export function Hashes() {
 	const toggleDisplayMode = () =>
 		setDisplayMode((prev) => (prev === "decimal" ? "hex" : "decimal"));
 
-	const copyToClipboard = () =>
-		navigator.clipboard.writeText(currentHash.toString());
+	const copyToClipboard = () => {
+		navigator.clipboard.writeText(
+			displayMode === "decimal"
+				? currentHash.toString()
+				: toHex(currentHash.toString()),
+		);
+	};
 
 	const onClearInputs = () => setInputs([{ id: "1", value: "" }]);
 

@@ -25,7 +25,7 @@ export function Operations({
 }: OperationsProps) {
 	return (
 		<div className="flex flex-col font-mono space-y-2">
-			<p className="text-sm text-cyber-gray font-mono leading-relaxed mb-4 mt-2">
+			<p className="text-sm text-cyber-gray font-mono leading-relaxed mb-4 mt-2 indent-6">
 				All operations below are fully encrypted using elliptic curve
 				cryptography. When you mint, transfer, or burn tokens, the data is
 				encrypted with your public key so that only you can decrypt and view

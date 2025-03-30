@@ -22,7 +22,7 @@ export function Deposit({
 					contract to spend your ERC-20 tokens. Once approved and deposited, the
 					contract receives the tokens and encrypts the deposited amount using
 					your public key. This encrypted value is then added to your private
-					balance using homomorphic operations.
+					balance using homomorphic addition.
 				</p>
 			</div>
 

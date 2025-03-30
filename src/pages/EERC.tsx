@@ -419,14 +419,6 @@ export function EERC() {
 							return;
 						}
 						disconnectAsync();
-						// setContractAuditorPublicKey(address as `0x${string}`)
-						// 	.then(() => {
-						// 		toast.success("Auditor key set");
-						// 	})
-						// 	.catch((error) => {
-						// 		toast.error("Error setting auditor key");
-						// 		console.error(error);
-						// 	});
 					}}
 				>
 					Disconnect
@@ -490,10 +482,20 @@ export function EERC() {
 				Generate Decryption Key
 			</button>
 
+			<Divider title="🧾 Registration" />
+
 			<div>
 				<p className="text-sm text-cyber-gray font-mono leading-relaxed indent-6">
-					You must register to the protocol with your wallet address and public
-					key for interacting with eERC protocol.
+					Every user must register to the protocol with their wallet address and
+					public key in order to interact with the eERC system. During
+					registration, the user derives a private key by signing a message with
+					their wallet, which is then used to generate a BabyJubjub public key
+					for ElGamal encryption. This public key is stored on-chain. At the
+					same time, a Poseidon hash is used to create a secure commitment that
+					links the user’s wallet address to their BabyJubjub keypair. This
+					registration step ensures that only the rightful owner of the wallet
+					can generate encrypted transactions, and that identity verification
+					can be performed efficiently inside zero-knowledge circuits.
 				</p>
 				<button
 					type="button"
@@ -683,7 +685,7 @@ export function EERC() {
 				</div>
 			)}
 
-			<div className="border border-cyber-green/30 rounded-md p-4 font-mono text-sm bg-black/10 mt-2">
+			<div className="border border-cyber-green/30 rounded-md p-4 font-mono text-sm bg-black/10 mt-2 mb-4">
 				<div className="grid grid-cols-[160px_1fr] gap-y-2 gap-x-2 items-center">
 					<div className="text-cyber-gray">Decrypted Balance</div>
 					<div className="text-cyber-green/80 break-all">

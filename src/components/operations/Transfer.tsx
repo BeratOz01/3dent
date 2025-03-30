@@ -28,6 +28,9 @@ export function Transfer({
 					representing <code>-amount</code>, which is homomorphically applied to
 					reduce their balance. Thanks to ElGamal’s additive homomorphism, this
 					update can be performed without revealing any values on-chain.
+					Meanwhile, Poseidon encryption creates efficient ciphertexts that
+					allow both sender and recipient to quickly decrypt their updated
+					balances locally without solving complex discrete logarithm problems.
 				</p>
 			</div>
 
