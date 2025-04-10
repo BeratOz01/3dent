@@ -1,7 +1,7 @@
 {
   "name": "poseidon-hash",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.0.1",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -9,7 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@avalabs/eerc-sdk-next": "^0.0.4",
+    "@avalabs/eerc-sdk-next": "file:../../Avalabs/eerc-sdk",
     "@darkforest_eth/hashing": "^6.7.29",
     "@react-three/drei": "^9.120.4",
     "@react-three/fiber": "^8.17.10",

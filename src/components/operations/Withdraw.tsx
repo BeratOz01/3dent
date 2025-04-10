@@ -3,12 +3,12 @@ import { Bounce, toast } from "react-toastify";
 
 interface WithdrawProps {
 	handlePrivateWithdraw: (amount: string) => Promise<void>;
-	shouldGenerateKey: boolean;
+	isDecryptionKeySet: boolean;
 }
 
 export function Withdraw({
 	handlePrivateWithdraw,
-	shouldGenerateKey,
+	isDecryptionKeySet,
 }: WithdrawProps) {
 	const [withdrawAmount, setWithdrawAmount] = useState<string>("");
 	const [loading, setLoading] = useState<boolean>(false);
@@ -75,7 +75,7 @@ export function Withdraw({
 								setLoading(false);
 							});
 					}}
-					disabled={!withdrawAmount || loading || shouldGenerateKey}
+					disabled={!withdrawAmount || loading || !isDecryptionKeySet}
 				>
 					{loading ? "Withdrawing..." : "Withdraw"}
 				</button>

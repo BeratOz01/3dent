@@ -1,14 +1,15 @@
 import { useState } from "react";
 import { Bounce, toast } from "react-toastify";
 import { useAccount } from "wagmi";
+
 interface TransferProps {
 	handlePrivateTransfer: (to: string, amount: string) => Promise<void>;
-	shouldGenerateKey: boolean;
+	isDecryptionKeySet: boolean;
 }
 
 export function Transfer({
 	handlePrivateTransfer,
-	shouldGenerateKey,
+	isDecryptionKeySet,
 }: TransferProps) {
 	const { address } = useAccount();
 	const [transferAmount, setTransferAmount] = useState<string>("");
@@ -107,7 +108,7 @@ export function Transfer({
 								setLoading(false);
 							});
 					}}
-					disabled={!transferAmount || loading || !to || shouldGenerateKey}
+					disabled={!transferAmount || loading || !to || !isDecryptionKeySet}
 				>
 					{loading ? "Transferring..." : "Transfer"}
 				</button>

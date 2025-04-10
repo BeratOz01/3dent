@@ -4,10 +4,10 @@ import { formatAmount } from "../../pkg/helpers";
 
 interface BurnProps {
 	handlePrivateBurn: (amount: bigint) => Promise<void>;
-	shouldGenerateKey: boolean;
+	isDecryptionKeySet: boolean;
 }
 
-export function Burn({ handlePrivateBurn, shouldGenerateKey }: BurnProps) {
+export function Burn({ handlePrivateBurn, isDecryptionKeySet }: BurnProps) {
 	const [burnAmount, setBurnAmount] = useState<string>("");
 	const [loading, setLoading] = useState<boolean>(false);
 
@@ -51,6 +51,17 @@ export function Burn({ handlePrivateBurn, shouldGenerateKey }: BurnProps) {
 								setBurnAmount("");
 							})
 							.catch((error) => {
+								console.log(error);
+
+								if (!error) {
+									setLoading(false);
+									toast.error("An unknown error occurred", {
+										position: "top-right",
+										autoClose: 5000,
+									});
+									return;
+								}
+
 								const isUserRejected = error?.details.includes("User rejected");
 								toast.error(
 									<div>
@@ -73,7 +84,7 @@ export function Burn({ handlePrivateBurn, shouldGenerateKey }: BurnProps) {
 								setLoading(false);
 							});
 					}}
-					disabled={!burnAmount || loading || shouldGenerateKey}
+					disabled={!burnAmount || loading || !isDecryptionKeySet}
 				>
 					{loading ? "Burning..." : "Burn"}
 				</button>

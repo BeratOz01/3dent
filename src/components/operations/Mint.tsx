@@ -5,12 +5,13 @@ import { formatAmount } from "../../pkg/helpers";
 
 interface MintProps {
 	handlePrivateMint: (amount: bigint) => Promise<void>;
-	shouldGenerateKey: boolean;
+	isDecryptionKeySet: boolean;
 }
 
-export function Mint({ handlePrivateMint, shouldGenerateKey }: MintProps) {
+export function Mint({ handlePrivateMint, isDecryptionKeySet }: MintProps) {
 	const [mintAmount, setMintAmount] = useState<string>("");
 	const [loading, setLoading] = useState<boolean>(false);
+
 	return (
 		<>
 			<div className="flex-1">
@@ -52,7 +53,8 @@ export function Mint({ handlePrivateMint, shouldGenerateKey }: MintProps) {
 								setMintAmount("");
 							})
 							.catch((error) => {
-								console.error(error?.message);
+								console.log(error);
+
 								toast.error(
 									<div>
 										<p>{error.reason}</p>
@@ -71,7 +73,7 @@ export function Mint({ handlePrivateMint, shouldGenerateKey }: MintProps) {
 								setLoading(false);
 							});
 					}}
-					disabled={!mintAmount || loading || shouldGenerateKey}
+					disabled={!mintAmount || loading || !isDecryptionKeySet}
 				>
 					{loading ? "Minting..." : "Mint"}
 				</button>

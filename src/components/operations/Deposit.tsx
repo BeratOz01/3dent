@@ -3,12 +3,12 @@ import { Bounce, toast } from "react-toastify";
 
 interface DepositProps {
 	handlePrivateDeposit: (amount: string) => Promise<void>;
-	shouldGenerateKey: boolean;
+	isDecryptionKeySet: boolean;
 }
 
 export function Deposit({
 	handlePrivateDeposit,
-	shouldGenerateKey,
+	isDecryptionKeySet,
 }: DepositProps) {
 	const [depositAmount, setDepositAmount] = useState<string>("");
 	const [loading, setLoading] = useState<boolean>(false);
@@ -74,7 +74,7 @@ export function Deposit({
 								setLoading(false);
 							});
 					}}
-					disabled={!depositAmount || loading || shouldGenerateKey}
+					disabled={!depositAmount || loading || !isDecryptionKeySet}
 				>
 					{loading ? "Depositing..." : "Deposit"}
 				</button>
