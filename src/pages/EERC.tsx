@@ -112,7 +112,6 @@ export function EERC() {
 		register,
 		useEncryptedBalance,
 		isAddressRegistered,
-		setContractAuditorPublicKey,
 		publicKey,
 	} = useEERC(
 		publicClient as CompatiblePublicClient,
