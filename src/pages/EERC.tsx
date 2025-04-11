@@ -443,15 +443,6 @@ export function EERC() {
 							return;
 						}
 						disconnectAsync();
-						// try {
-						// 	const ttx = await setContractAuditorPublicKey(
-						// 		address as `0x${string}`,
-						// 	);
-						// 	setTxHash(ttx as `0x${string}`);
-						// } catch (error) {
-						// 	console.error(error);
-						// 	toast.error("Error setting auditor public key");
-						// }
 					}}
 				>
 					Disconnect
