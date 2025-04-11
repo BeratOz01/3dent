@@ -22,7 +22,7 @@ export function Hashes() {
 
 	const [selectedFunction, setSelectedFunction] =
 		useState<HashFunction>("poseidon");
-	const [displayMode, setDisplayMode] = useState<DisplayMode>("decimal");
+	const [displayMode, setDisplayMode] = useState<DisplayMode>("hex");
 
 	const { currentHash } = useHashCalculation(
 		inputs,
@@ -64,40 +64,92 @@ export function Hashes() {
 					Cryptographic Hash Functions
 				</h2>
 				<p className="text-justify indent-6">
-					Cryptographic hash functions are mathematical algorithms that
-					transform any input into a fixed-length string of characters, known as
-					a hash. These functions are designed to be deterministic,
-					collision-resistant, and irreversible, ensuring that even the smallest
-					input changes produce drastically different outputs.
+					Hash functions are like digital fingerprints for data. They take any
+					input (text, numbers, files) and transform it into a fixed-length
+					string of characters. This transformation is designed to be:
 				</p>
+				<ul className="list-disc pl-10 mt-1">
+					<li>
+						<strong>Deterministic</strong> - The same input always produces the
+						same output
+					</li>
+					<li>
+						<strong>One-way</strong> - It's practically impossible to reverse
+						the process
+					</li>
+					<li>
+						<strong>Collision-resistant</strong> - Different inputs rarely
+						produce the same output
+					</li>
+					<li>
+						<strong>Avalanche Effect</strong> - Any modification to the input
+						results in significant changes to the output hash
+					</li>
+				</ul>
+
+				<h3 className="text-cyber-green font-bold text-md mt-6">
+					Hash Functions in Zero-Knowledge Proofs
+				</h3>
 				<p className="text-justify indent-6">
-					In zero-knowledge proofs, hash functions play a critical role. They
-					allow developers to create secure commitments, efficient proofs, and
-					verifiable computations without revealing sensitive data. Hashes make
-					it possible to verify the correctness of computations while keeping
-					inputs private.
+					Zero-knowledge proofs allow you to prove you know something without
+					revealing what you know. Hash functions are essential building blocks
+					in these systems, enabling:
 				</p>
+				<ul className="list-disc pl-10 mb-2">
+					<li>
+						<strong>Secure data commitments</strong> - A commitment is like a
+						sealed envelope containing a secret. You can show others that you
+						have a secret without revealing what it is. Later, you can "open"
+						the commitment to prove you knew the secret all along. This is
+						crucial for privacy-preserving systems.
+					</li>
+					<li>
+						<strong>Efficient verification of computations</strong> - Hash
+						functions can be used to verify computations without revealing the
+						inputs or outputs.
+					</li>
+				</ul>
+
 				<p className="text-justify indent-6">
-					<strong className="text-cyber-green">Poseidon</strong> is a
-					zk-friendly hash function specifically designed to be efficient inside
-					zk-SNARK and zk-STARK circuits. Unlike traditional hash functions like
-					SHA or Keccak, Poseidon is optimized to reduce the number of
-					constraints in arithmetic circuits over finite fields — making it
-					extremely efficient for use in zk applications. Its algebraic
-					structure is well-suited for zk proving systems, making operations
-					like Merkle tree hashing, commitments, and on-chain validation much
-					cheaper and scalable.
+					For example, imagine you want to prove you know a password without
+					actually sharing it. You could create a commitment by hashing the
+					password. You can share this hash with others, and later prove you
+					knew the password by showing that hashing your password produces the
+					same hash you shared earlier.
 				</p>
+
+				<h3 className="text-cyber-green font-bold text-md mt-2">
+					Poseidon Hash
+				</h3>
 				<p className="text-justify indent-6">
-					Another zk-optimized hash function is{" "}
-					<strong className="text-cyber-green">MiMC Sponge</strong>, which
-					operates on a similar principle but with a different internal
-					construction. While MiMC provides excellent performance in certain
-					contexts, Poseidon generally outperforms it in constraint minimization
-					and proof generation times, especially in zkDSLs and proof systems
-					like Halo2, Circom, and Plonk. Both Poseidon and MiMC are widely used
-					for hashing sensitive data, generating commitments, and building
-					verifiable circuits that preserve privacy at scale.
+					<strong className="text-cyber-green">Poseidon</strong> is a modern
+					hash function specifically designed for zero-knowledge applications.
+					Unlike traditional hash functions like SHA-256, Poseidon is optimized
+					to work efficiently within zero-knowledge proof systems. This makes
+					it:
+				</p>
+				<ul className="list-disc pl-10 mb-2">
+					<li>Much faster to compute in zero-knowledge contexts</li>
+					<li>More cost-effective for blockchain applications</li>
+					<li>Ideal for building privacy-preserving systems</li>
+				</ul>
+
+				<h3 className="text-cyber-green font-bold text-md mt-2">MiMC Sponge</h3>
+				<p className="text-justify indent-6">
+					<strong className="text-cyber-green">MiMC Sponge</strong> is another
+					zero-knowledge friendly hash function. While Poseidon generally offers
+					better performance, MiMC remains important in certain specialized
+					applications. Both functions are widely used in:
+				</p>
+				<ul className="list-disc pl-10">
+					<li>Privacy-preserving blockchain transactions</li>
+					<li>Secure data verification systems</li>
+					<li>Zero-knowledge proof frameworks</li>
+				</ul>
+
+				<p className="text-justify indent-6 mt-2">
+					Try out the hash calculator below to see how these functions generate
+					unique hashes from any input.
 				</p>
 			</div>
 			<HashInput

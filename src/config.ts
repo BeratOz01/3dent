@@ -1,9 +1,9 @@
 import { http, createConfig } from "wagmi";
-import { hardhat } from "wagmi/chains";
+import { avalancheFuji } from "wagmi/chains";
 
 export const config = createConfig({
-	chains: [hardhat],
+	chains: [avalancheFuji],
 	transports: {
-		[hardhat.id]: http(),
+		[avalancheFuji.id]: http(),
 	},
 });

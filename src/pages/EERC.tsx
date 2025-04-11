@@ -2,7 +2,7 @@ import {
 	type CompatiblePublicClient,
 	type CompatibleWalletClient,
 	useEERC,
-} from "@avalabs/eerc-sdk-next";
+} from "@avalabs/eerc-sdk";
 import { useEffect, useState } from "react";
 import { Bounce, toast } from "react-toastify";
 import { parseUnits } from "viem";
@@ -16,6 +16,7 @@ import {
 	useWaitForTransactionReceipt,
 	useWalletClient,
 } from "wagmi";
+import { avalancheFuji } from "wagmi/chains";
 import { Divider } from "../components";
 import { ConverterMode } from "../components/eerc/ConverterMode";
 import { StandaloneMode } from "../components/eerc/StandaloneMode";
@@ -24,19 +25,22 @@ import {
 	CONTRACTS,
 	type EERCMode,
 	EXPLORER_BASE_URL,
+	EXPLORER_BASE_URL_TX,
 } from "../config/contracts";
 import { DEMO_TOKEN_ABI as erc20Abi } from "../pkg/constants";
-
 export function EERC() {
 	const [txHash, setTxHash] = useState<`0x${string}`>("" as `0x${string}`);
 	const [mode, setMode] = useState<EERCMode>("standalone");
 	const [showEncryptedDetails, setShowEncryptedDetails] = useState(false);
 	const [isRegistering, setIsRegistering] = useState(false);
+	const [isTransactionPending, setIsTransactionPending] = useState(false);
+	const [transactionType, setTransactionType] = useState<string>("");
 	const { data: transactionReceipt, isSuccess } = useWaitForTransactionReceipt({
 		hash: txHash,
 		query: { enabled: Boolean(txHash) },
 		confirmations: 1,
 	});
+	const { disconnectAsync } = useDisconnect();
 
 	// Add URL parameter handling
 	useEffect(() => {
@@ -63,7 +67,7 @@ export function EERC() {
 				<div>
 					<p>Transaction successful</p>
 					<a
-						href={`${EXPLORER_BASE_URL}${transactionReceipt?.transactionHash}`}
+						href={`${EXPLORER_BASE_URL_TX}${transactionReceipt?.transactionHash}`}
 						target="_blank"
 						rel="noopener noreferrer"
 						className="text-cyber-green underline hover:text-cyber-green/80"
@@ -85,13 +89,15 @@ export function EERC() {
 
 			setTxHash("" as `0x${string}`);
 			setIsRegistering(false);
+			setIsTransactionPending(false);
+			setTransactionType("");
 		}
 	}, [txHash, isSuccess, transactionReceipt]);
 
 	const { connectAsync } = useConnect();
 	const { address, isConnected, isConnecting } = useAccount();
 
-	const publicClient = usePublicClient({ chainId: 31337 });
+	const publicClient = usePublicClient({ chainId: avalancheFuji.id });
 	const { data: walletClient } = useWalletClient();
 
 	// use eerc
@@ -134,9 +140,18 @@ export function EERC() {
 			return;
 		}
 
-		const { transactionHash } = await privateMint(address, amount);
-		setTxHash(transactionHash as `0x${string}`);
-		refetchBalance();
+		setIsTransactionPending(true);
+		setTransactionType("Private Minting");
+		try {
+			const { transactionHash } = await privateMint(address, amount);
+			setTxHash(transactionHash as `0x${string}`);
+			refetchBalance();
+		} catch (error) {
+			console.error(error);
+			toast.error("Minting failed");
+			setIsTransactionPending(false);
+			setTransactionType("");
+		}
 	};
 
 	// handle private burn
@@ -146,9 +161,18 @@ export function EERC() {
 			return;
 		}
 
-		const { transactionHash } = await privateBurn(amount);
-		setTxHash(transactionHash as `0x${string}`);
-		refetchBalance();
+		setIsTransactionPending(true);
+		setTransactionType("Private Burning");
+		try {
+			const { transactionHash } = await privateBurn(amount);
+			setTxHash(transactionHash as `0x${string}`);
+			refetchBalance();
+		} catch (error) {
+			console.error(error);
+			toast.error("Burning failed");
+			setIsTransactionPending(false);
+			setTransactionType("");
+		}
 	};
 
 	// handle private transfer
@@ -158,19 +182,30 @@ export function EERC() {
 			return;
 		}
 
-		const { isRegistered: isToRegistered } = await isAddressRegistered(
-			to as `0x${string}`,
-		);
-		if (!isToRegistered) {
-			toast.error("Recipient is not registered");
-			return;
+		setIsTransactionPending(true);
+		setTransactionType("Private Transferring");
+		try {
+			const { isRegistered: isToRegistered } = await isAddressRegistered(
+				to as `0x${string}`,
+			);
+			if (!isToRegistered) {
+				toast.error("Recipient is not registered");
+				setIsTransactionPending(false);
+				setTransactionType("");
+				return;
+			}
+
+			const parsedAmount = parseUnits(amount, Number(decimals));
+
+			const { transactionHash } = await privateTransfer(to, parsedAmount);
+			setTxHash(transactionHash as `0x${string}`);
+			refetchBalance();
+		} catch (error) {
+			console.error(error);
+			toast.error("Transfer failed");
+			setIsTransactionPending(false);
+			setTransactionType("");
 		}
-
-		const parsedAmount = parseUnits(amount, Number(decimals));
-
-		const { transactionHash } = await privateTransfer(to, parsedAmount);
-		setTxHash(transactionHash as `0x${string}`);
-		refetchBalance();
 	};
 
 	// handle private deposit
@@ -180,17 +215,28 @@ export function EERC() {
 			return;
 		}
 
-		if (!erc20Decimals) {
-			console.log("No decimals");
-			return;
+		setIsTransactionPending(true);
+		setTransactionType("Private Depositing");
+		try {
+			if (!erc20Decimals) {
+				console.log("No decimals");
+				setIsTransactionPending(false);
+				setTransactionType("");
+				return;
+			}
+
+			const parsedAmount = parseUnits(amount, erc20Decimals);
+
+			const { transactionHash } = await deposit(parsedAmount);
+			setTxHash(transactionHash as `0x${string}`);
+			refetchBalance();
+			refetchErc20Balance();
+		} catch (error) {
+			console.error(error);
+			toast.error("Deposit failed");
+			setIsTransactionPending(false);
+			setTransactionType("");
 		}
-
-		const parsedAmount = parseUnits(amount, erc20Decimals);
-
-		const { transactionHash } = await deposit(parsedAmount);
-		setTxHash(transactionHash as `0x${string}`);
-		refetchBalance();
-		refetchErc20Balance();
 	};
 
 	// handle private withdraw
@@ -200,17 +246,28 @@ export function EERC() {
 			return;
 		}
 
-		if (!decimals) {
-			console.log("No decimals");
-			return;
+		setIsTransactionPending(true);
+		setTransactionType("Private Withdrawing");
+		try {
+			if (!decimals) {
+				console.log("No decimals");
+				setIsTransactionPending(false);
+				setTransactionType("");
+				return;
+			}
+
+			const parsedAmount = parseUnits(amount, Number(decimals));
+
+			const { transactionHash } = await withdraw(parsedAmount);
+			setTxHash(transactionHash as `0x${string}`);
+			refetchBalance();
+			refetchErc20Balance();
+		} catch (error) {
+			console.error(error);
+			toast.error("Withdrawal failed");
+			setIsTransactionPending(false);
+			setTransactionType("");
 		}
-
-		const parsedAmount = parseUnits(amount, Number(decimals));
-
-		const { transactionHash } = await withdraw(parsedAmount);
-		setTxHash(transactionHash as `0x${string}`);
-		refetchBalance();
-		refetchErc20Balance();
 	};
 
 	const { data: erc20Decimals } = useReadContract({
@@ -382,20 +439,20 @@ export function EERC() {
 					className="bg-cyber-dark w-full text-cyber-green px-2 py-1 rounded-md text-sm border border-cyber-green/60 disabled:opacity-50 disabled:cursor-not-allowed mb-2 hover:bg-cyber-green/60 transition-all duration-200 font-mono"
 					disabled={!isConnected}
 					onClick={async () => {
-						// if (!isConnected) {
-						// 	console.log("Not connected");
-						// 	return;
-						// }
-						// disconnectAsync();
-						try {
-							const ttx = await setContractAuditorPublicKey(
-								address as `0x${string}`,
-							);
-							setTxHash(ttx as `0x${string}`);
-						} catch (error) {
-							console.error(error);
-							toast.error("Error setting auditor public key");
+						if (!isConnected) {
+							console.log("Not connected");
+							return;
 						}
+						disconnectAsync();
+						// try {
+						// 	const ttx = await setContractAuditorPublicKey(
+						// 		address as `0x${string}`,
+						// 	);
+						// 	setTxHash(ttx as `0x${string}`);
+						// } catch (error) {
+						// 	console.error(error);
+						// 	toast.error("Error setting auditor public key");
+						// }
 					}}
 				>
 					Disconnect
@@ -458,16 +515,20 @@ export function EERC() {
 
 			<div>
 				<p className="text-sm text-cyber-gray font-mono leading-relaxed indent-6">
-					Every user must register to the protocol with their wallet address and
-					public key in order to interact with the eERC system. During
-					registration, the user derives a private key by signing a message with
-					their wallet, which is then used to generate a BabyJubjub public key
-					for ElGamal encryption. This public key is stored on-chain. At the
-					same time, a Poseidon hash is used to create a secure commitment that
-					links the user's wallet address to their BabyJubjub keypair.This step
-					ensures only the wallet owner can generate encrypted transactions, and
-					enables efficient identity verification within zero-knowledge
-					circuits.
+					Before you can use eERC, you need to register your wallet. This
+					process:
+				</p>
+				<ul className="text-sm text-cyber-gray font-mono leading-relaxed indent-1 list-disc pl-8 space-y-1 ml-5">
+					<li>Creates a unique public key for your encrypted transactions</li>
+					<li>Links your wallet address to this public key securely</li>
+					<li>Enables you to receive and manage encrypted tokens</li>
+				</ul>
+				<p className="text-sm text-cyber-gray font-mono leading-relaxed indent-6 mt-2">
+					The registration is a one-time process that happens on-chain. Once
+					completed, you'll be able to mint, transfer, and burn tokens
+					privately. But key is generated locally, so you can use it on any
+					device. Private keys are never uploaded or shared — they stay entirely
+					local in your browser.
 				</p>
 				<button
 					type="button"
@@ -486,23 +547,52 @@ export function EERC() {
 					}}
 				>
 					{isRegistered ? (
-						"Registered"
+						"✓ Registered"
 					) : isRegistering ? (
-						<div>
-							Registering...
+						<div className="flex flex-col items-center gap-1">
+							<span>Registering your wallet...</span>
 							{txHash && (
-								<div className="text-xs text-cyber-gray">
-									Transaction hash: {txHash}
-								</div>
+								<span className="text-xs text-cyber-gray">
+									Transaction: {txHash.slice(0, 6)}...{txHash.slice(-4)}
+								</span>
 							)}
 						</div>
 					) : (
-						"Register to the protocol"
+						"Register Wallet"
 					)}
 				</button>
 			</div>
 
 			<Divider title="📜 eERC Contract" my={2} />
+
+			{/* Transaction Pending Indicator - Enhanced Version */}
+			{isTransactionPending && (
+				<div className="border border-cyber-green/50 rounded-md p-4 font-mono text-sm mb-4">
+					<div className="flex flex-col items-center gap-2">
+						<div className="text-cyber-green font-bold text-lg">
+							{transactionType} in progress...
+						</div>
+						{txHash && (
+							<div className="flex flex-col items-center p-3 rounded-md w-full">
+								<span className="text-cyber-green font-semibold mb-1">
+									Transaction Hash:
+								</span>
+								<span className="text-xs text-cyber-gray font-mono p-2 rounded w-full text-center break-all">
+									{txHash}
+								</span>
+								<a
+									href={`${EXPLORER_BASE_URL_TX}${txHash}`}
+									target="_blank"
+									rel="noopener noreferrer"
+									className="text-xs text-cyber-green underline hover:text-cyber-green/80 mt-2 bg-cyber-green/10 px-3 py-1 rounded"
+								>
+									View on Explorer →
+								</a>
+							</div>
+						)}
+					</div>
+				</div>
+			)}
 
 			<div className="flex items-center space-x-4 font-mono text-sm text-cyber-gray justify-center my-3">
 				{/* biome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}

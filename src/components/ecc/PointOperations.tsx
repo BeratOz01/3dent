@@ -81,7 +81,7 @@ export const PointOperations: React.FC<PointOperationsProps> = ({ p1, p2 }) => {
 	}, [scalar, p1]);
 
 	return (
-		<div className="flex flex-col gap-2">
+		<div className="flex flex-col gap-2 mt-2">
 			<CurvePoint
 				x={sum.x}
 				y={sum.y}

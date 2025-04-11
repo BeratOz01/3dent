@@ -2,7 +2,7 @@ import {
 	type CompatiblePublicClient,
 	type CompatibleWalletClient,
 	useEERC,
-} from "@avalabs/eerc-sdk-next";
+} from "@avalabs/eerc-sdk";
 import { packPoint } from "@zk-kit/baby-jubjub";
 import { toast } from "react-toastify";
 import {
@@ -214,8 +214,6 @@ export function ConverterMode({
 					className="mb-2 bg-cyber-dark text-cyber-green px-2 py-1 rounded text-sm border border-cyber-green/60 hover:bg-cyber-green/60 transition-all duration-200 font-mono self-center disabled:opacity-50 disabled:cursor-not-allowed"
 					disabled={encryptedBalance.length === 0}
 					onClick={() => {
-						console.log(encryptedBalance);
-
 						setShowEncryptedDetails(!showEncryptedDetails);
 					}}
 				>

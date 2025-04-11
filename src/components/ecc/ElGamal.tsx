@@ -6,6 +6,7 @@ import {
 	packPoint,
 } from "@zk-kit/baby-jubjub";
 import { useEffect, useMemo, useState } from "react";
+import { FaInfoCircle, FaKey, FaLock, FaUnlock } from "react-icons/fa";
 import { IDENTITY_POINT } from "../../pkg/constants";
 import { fieldE, genKeyPair, genRandomScalar } from "../../pkg/jub";
 import type { IJubPoint } from "../../types";
@@ -21,6 +22,7 @@ export const ElGamal = () => {
 		privateKey: 0n,
 		publicKey: IDENTITY_POINT,
 	});
+	const [showSteps, setShowSteps] = useState(false);
 
 	const [ciphertext, setCiphertext] = useState<{
 		C1: IJubPoint;
@@ -101,42 +103,117 @@ export const ElGamal = () => {
 	return (
 		<>
 			<div className="text-cyber-gray font-mono text-sm leading-relaxed mt-10 mb-2">
-				<h2 className="text-cyber-green font-bold text-lg mb-4 text-center">
+				<h2 className="text-cyber-green font-bold text-lg mb-4 text-center flex items-center justify-center gap-2">
+					<FaLock className="text-cyber-green" />
 					ElGamal Encryption on BabyJubjub
 				</h2>
-				<p className="text-justify indent-6">
-					ElGamal encryption is a widely used public-key encryption scheme,
-					adapted here for the BabyJubjub elliptic curve. This scheme leverages
-					the algebraic structure of elliptic curves to provide strong security
-					guarantees while maintaining computational efficiency.
-				</p>
+				<div className="space-y-4">
+					<p className="text-justify indent-6">
+						ElGamal encryption is a trusted and widely used public-key
+						encryption method. In the context of EERC, it is adapted to run on
+						the BabyJubjub elliptic curve. This allows us to encrypt values with
+						a public key and only the owner of the private key can decrypt it.
+						While keeping things private, in El Gamal we can add two cipher
+						texts together, and the decrypted result will be the sum of the
+						original messages thanks to the homomorphic properties of the curve.
+					</p>
+					<div className="bg-cyber-dark/30 p-4 rounded-lg border border-cyber-green/20">
+						<h3 className="text-cyber-green font-semibold mb-2">
+							How it works:
+						</h3>
+						<ol className="list-decimal pl-6 space-y-2 text-sm">
+							<li>Generate a key pair (private and public keys)</li>
+							<li>Encrypt a message using the public key</li>
+							<li>Decrypt the ciphertext using the private key</li>
+						</ol>
+					</div>
+				</div>
 			</div>
 
 			<Divider title="🔐 Key Generation" />
-			<GenerateKey
-				handleGenerateKeyPair={handleGenerateKeyPair}
-				keyPair={keyPair}
-			/>
+			<div className="bg-cyber-dark/30 p-4 rounded-lg border border-cyber-green/20 mb-4">
+				<div className="flex items-center justify-between mb-4">
+					<h3 className="text-cyber-green font-semibold flex items-center gap-2">
+						<FaKey className="text-cyber-green" />
+						Key Pair
+					</h3>
+					<button
+						type="button"
+						onClick={() => setShowSteps(!showSteps)}
+						className="text-xs bg-cyber-dark px-2 py-1 rounded border border-cyber-green/30 hover:border-cyber-green/60 flex items-center gap-1"
+					>
+						<FaInfoCircle className="text-xs" />
+						{showSteps ? "Hide Steps" : "Show Steps"}
+					</button>
+				</div>
+				<GenerateKey
+					handleGenerateKeyPair={handleGenerateKeyPair}
+					keyPair={keyPair}
+				/>
+				{showSteps && (
+					<div className="mt-4 text-sm text-cyber-gray">
+						<h4 className="text-cyber-green mb-2">Key Generation Steps:</h4>
+						<ol className="list-decimal pl-6 space-y-2">
+							<li>Select a random private key (k)</li>
+							<li>Calculate public key (P = k × G)</li>
+							<li>Share public key, keep private key secret</li>
+						</ol>
+					</div>
+				)}
+			</div>
 
 			<Divider title="📦 Encryption" />
-			<Encryption
-				message={message}
-				setMessage={setMessage}
-				handleEncrypt={handleEncrypt}
-				ciphertext={ciphertext}
-				setCiphertext={setCiphertext}
-				encryptionRandom={encryptionRandom}
-				setDecrypted={setDecrypted}
-			/>
+			<div className="bg-cyber-dark/30 p-4 rounded-lg border border-cyber-green/20 mb-4">
+				<h3 className="text-cyber-green font-semibold mb-4 flex items-center gap-2">
+					<FaLock className="text-cyber-green" />
+					Encrypt Message
+				</h3>
+				<Encryption
+					message={message}
+					setMessage={setMessage}
+					handleEncrypt={handleEncrypt}
+					ciphertext={ciphertext}
+					setCiphertext={setCiphertext}
+					encryptionRandom={encryptionRandom}
+					setDecrypted={setDecrypted}
+				/>
+				{showSteps && (
+					<div className="mt-4 text-sm text-cyber-gray">
+						<h4 className="text-cyber-green mb-2">Encryption Steps:</h4>
+						<ol className="list-decimal pl-6 space-y-2">
+							<li>Convert message to point on curve (M)</li>
+							<li>Generate random value (r)</li>
+							<li>Calculate C1 = r × G</li>
+							<li>Calculate C2 = M + r × P</li>
+						</ol>
+					</div>
+				)}
+			</div>
 
 			<Divider title="🔑 Decryption" />
-			<Decryption
-				decrypted={decrypted}
-				handleDecrypt={handleDecrypt}
-				canDecrypt={canDecrypt}
-				packedOriginal={packedOriginal}
-				packedDecrypted={packedDecrypted}
-			/>
+			<div className="bg-cyber-dark/30 p-4 rounded-lg border border-cyber-green/20">
+				<h3 className="text-cyber-green font-semibold mb-4 flex items-center gap-2">
+					<FaUnlock className="text-cyber-green" />
+					Decrypt Message
+				</h3>
+				<Decryption
+					decrypted={decrypted}
+					handleDecrypt={handleDecrypt}
+					canDecrypt={canDecrypt}
+					packedOriginal={packedOriginal}
+					packedDecrypted={packedDecrypted}
+				/>
+				{showSteps && (
+					<div className="mt-4 text-sm text-cyber-gray">
+						<h4 className="text-cyber-green mb-2">Decryption Steps:</h4>
+						<ol className="list-decimal pl-6 space-y-2">
+							<li>Calculate S = k × C1</li>
+							<li>Calculate M = C2 - S</li>
+							<li>Convert point back to message</li>
+						</ol>
+					</div>
+				)}
+			</div>
 		</>
 	);
 };

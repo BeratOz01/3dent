@@ -9,7 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@avalabs/eerc-sdk-next": "file:../../Avalabs/eerc-sdk",
+    "@avalabs/eerc-sdk": "1.0.0",
     "@darkforest_eth/hashing": "^6.7.29",
     "@react-three/drei": "^9.120.4",
     "@react-three/fiber": "^8.17.10",
