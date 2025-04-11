@@ -1,9 +1,28 @@
-import { useState } from "react";
+import { Suspense, lazy, useState } from "react";
 import { Logo } from "./components/layout/Logo";
-import { ECC } from "./pages/ECC";
-import { EERC } from "./pages/EERC";
-import { Hashes } from "./pages/Hashes";
-import { PoseidonEncrypt } from "./pages/PoseidonEncrypt";
+
+// Lazy load page components
+const ECC = lazy(() =>
+	import("./pages/ECC").then((module) => ({ default: module.ECC })),
+);
+const EERC = lazy(() =>
+	import("./pages/EERC").then((module) => ({ default: module.EERC })),
+);
+const Hashes = lazy(() =>
+	import("./pages/Hashes").then((module) => ({ default: module.Hashes })),
+);
+const PoseidonEncrypt = lazy(() =>
+	import("./pages/PoseidonEncrypt").then((module) => ({
+		default: module.PoseidonEncrypt,
+	})),
+);
+
+// Loading component
+const LoadingFallback = () => (
+	<div className="flex items-center justify-center h-full">
+		<div className="text-cyber-green font-mono">Loading...</div>
+	</div>
+);
 
 export function App() {
 	const [selectedPage, setSelectedPage] = useState<
@@ -61,15 +80,17 @@ export function App() {
 
 			{/* Page Content */}
 			<main className="flex-grow p-6 bg-cyber-black">
-				{selectedPage === "hashes" ? (
-					<Hashes />
-				) : selectedPage === "ecc" ? (
-					<ECC />
-				) : selectedPage === "EERC" ? (
-					<EERC />
-				) : (
-					<PoseidonEncrypt />
-				)}
+				<Suspense fallback={<LoadingFallback />}>
+					{selectedPage === "hashes" ? (
+						<Hashes />
+					) : selectedPage === "ecc" ? (
+						<ECC />
+					) : selectedPage === "EERC" ? (
+						<EERC />
+					) : (
+						<PoseidonEncrypt />
+					)}
+				</Suspense>
 			</main>
 		</div>
 	);
