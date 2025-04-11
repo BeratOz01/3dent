@@ -1,7 +1,18 @@
+import {
+	type CompatiblePublicClient,
+	type CompatibleWalletClient,
+	useEERC,
+} from "@avalabs/eerc-sdk";
 import { packPoint } from "@zk-kit/baby-jubjub";
 import { toast } from "react-toastify";
-import { useAccount, useReadContract, useWriteContract } from "wagmi";
-import { CONTRACTS } from "../../config/contracts";
+import {
+	useAccount,
+	usePublicClient,
+	useReadContract,
+	useWalletClient,
+	useWriteContract,
+} from "wagmi";
+import { CIRCUIT_CONFIG, CONTRACTS } from "../../config/contracts";
 import { MAX_UINT256, DEMO_TOKEN_ABI as erc20Abi } from "../../pkg/constants";
 import { formatDisplayAmount } from "../../pkg/helpers";
 import { RightTooltip } from "../Tooltip";
