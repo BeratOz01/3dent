@@ -2,6 +2,7 @@ import ReactDOM from "react-dom/client";
 import { App } from "./App";
 import "./index.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { Analytics } from "@vercel/analytics/react";
 import { Bounce, ToastContainer } from "react-toastify";
 import { WagmiProvider } from "wagmi";
 import { config } from "./config";
@@ -26,6 +27,7 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
 				transition={Bounce}
 				toastClassName={"font-mono border-cyber-green/60"}
 			/>
+			<Analytics />
 		</QueryClientProvider>
 	</WagmiProvider>,
 );
