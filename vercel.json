@@ -1,6 +1,6 @@
 {
-  "buildCommand": "npm run build",
+  "buildCommand": "./vercel-build.sh",
   "outputDirectory": "dist",
   "framework": "vite",
-  "installCommand": "npm install --ignore-optional"
+  "installCommand": "npm install --ignore-optional && npm install @rollup/rollup-linux-x64-gnu@4.9.5"
 }
