@@ -80,7 +80,6 @@ export function ECC() {
 							<li>Optimized for zero-knowledge proofs</li>
 							<li>Efficient point operations</li>
 							<li>Large prime field for security</li>
-							<li>Used in eERC for ElGamal encryption</li>
 						</ul>
 					</div>
 				</div>
