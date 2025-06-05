@@ -473,7 +473,7 @@ export function EERC() {
       <Divider title="🔑 Generate Decryption Key" />
       <p className="text-sm text-cyber-gray font-mono leading-relaxed mb-4 indent-6">
         This key is derived by signing a predefined message with your wallet. It
-        is never uploaded or shared — it stays entirely local in your browser.
+        is never uploaded or shared.
       </p>
       <button
         type="button"
@@ -511,11 +511,14 @@ export function EERC() {
 
       <div>
         <p className="text-sm text-cyber-gray font-mono leading-relaxed indent-6">
-          Before you can use eERC, you need to register your wallet. This
+          Before starting using eERC, you need to register your wallet. This
           process:
         </p>
         <ul className="text-sm text-cyber-gray font-mono leading-relaxed indent-1 list-disc pl-8 space-y-1 ml-5">
-          <li>Creates a unique public key for your encrypted transactions</li>
+          <li>
+            Creates a unique encryption key to be used for encrypted
+            transactions
+          </li>
           <li>Links your wallet address to this public key securely</li>
           <li>Enables you to receive and manage encrypted tokens</li>
         </ul>

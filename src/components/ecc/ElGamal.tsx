@@ -137,29 +137,11 @@ export const ElGamal = () => {
 						<FaKey className="text-cyber-green" />
 						Key Pair
 					</h3>
-					<button
-						type="button"
-						onClick={() => setShowSteps(!showSteps)}
-						className="text-xs bg-cyber-dark px-2 py-1 rounded border border-cyber-green/30 hover:border-cyber-green/60 flex items-center gap-1"
-					>
-						<FaInfoCircle className="text-xs" />
-						{showSteps ? "Hide Steps" : "Show Steps"}
-					</button>
 				</div>
 				<GenerateKey
 					handleGenerateKeyPair={handleGenerateKeyPair}
 					keyPair={keyPair}
 				/>
-				{showSteps && (
-					<div className="mt-4 text-sm text-cyber-gray">
-						<h4 className="text-cyber-green mb-2">Key Generation Steps:</h4>
-						<ol className="list-decimal pl-6 space-y-2">
-							<li>Select a random private key (k)</li>
-							<li>Calculate public key (P = k × G)</li>
-							<li>Share public key, keep private key secret</li>
-						</ol>
-					</div>
-				)}
 			</div>
 
 			<Divider title="📦 Encryption" />

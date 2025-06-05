@@ -204,14 +204,6 @@ export function ECC() {
 								>
 									Base8
 								</button>
-								<button
-									type="button"
-									onClick={() => setPresetPoint(PRESET_POINTS.random(), "p1")}
-									className="text-xs bg-cyber-dark px-2 py-1 rounded border border-cyber-green/30 hover:border-cyber-green/60 flex items-center gap-1"
-								>
-									<FaRandom className="text-xs" />
-									Random
-								</button>
 							</div>
 							<CurvePoint {...p1} label="P1" onChange={handlePoint1Change} />
 						</div>
